@@ -1,6 +1,3 @@
-"""
-notifier.py — Desktop, email, and Slack notifications.
-"""
 import os, json, smtplib, threading
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
