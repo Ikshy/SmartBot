@@ -1,0 +1,9 @@
+schedule==1.2.1
+watchdog==4.0.0
+pandas==2.2.2
+plyer==2.1.0
+requests==2.31.0
+pyautogui==0.9.54
+slack-sdk==3.27.2
+psutil==5.9.8
+pytest==8.2.0
