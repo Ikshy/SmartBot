@@ -83,3 +83,11 @@ def organize_folder(source_dir, target_dir):
             summary.setdefault(category, []).append(filename)
     return summary
 
+def list_files(directory, recursive=False):
+    directory = os.path.expanduser(directory)
+    if not os.path.isdir(directory):
+        return []
+    if recursive:
+        return [str(p) for p in Path(directory).rglob("*") if p.is_file()]
+    return [os.path.join(directory, f) for f in os.listdir(directory)
+            if os.path.isfile(os.path.join(directory, f))]
