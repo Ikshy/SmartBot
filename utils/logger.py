@@ -1,6 +1,3 @@
-"""
-logger.py — Centralized logging system.
-"""
 import logging, csv, os
 from datetime import datetime
 from logging.handlers import RotatingFileHandler
