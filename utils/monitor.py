@@ -1,6 +1,3 @@
-"""
-monitor.py — Folder and application monitoring.
-"""
 import os, time, threading, psutil
 from utils.logger import get_logger, log_action
 
@@ -70,7 +67,37 @@ class FolderMonitor:
 
 
 class AppMonitor:
- 
+    def __init__(self, tracked_apps, threshold_minutes=120, poll_interval_seconds=60, alert_callback=None):
+        self.tracked_apps = [a.lower() for a in tracked_apps]
+        self.threshold_minutes = threshold_minutes
+        self.poll_interval = poll_interval_seconds
+        self.alert_callback = alert_callback
+        self._usage = {}
+        self._alerted = set()
+        self._running = False
+        self._thread = None
+
+    def _get_running_apps(self):
+        running = set()
+        for proc in psutil.process_iter(["name"]):
+            try:
+                running.add(proc.info["name"].lower().replace(".exe", ""))
+            except (psutil.NoSuchProcess, psutil.AccessDenied):
+                pass
+        return running
+
+    def _poll(self):
+        while self._running:
+            running = self._get_running_apps()
+            for app in self.tracked_apps:
+                if app in running:
+                    self._usage[app] = self._usage.get(app, 0) + (self.poll_interval / 60)
+                    usage = self._usage[app]
+                    if usage >= self.threshold_minutes and app not in self._alerted:
+                        self._alerted.add(app)
+                        if self.alert_callback:
+                            self.alert_callback(app, usage)
+            time.sleep(self.poll_interval)
 
     def start(self):
         self._running = True
